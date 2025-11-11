@@ -1,0 +1,16 @@
+asgiref==3.10.0
+black==25.11.0
+click==8.3.0
+colorama==0.4.6
+Django==5.2.8
+dotenv==0.9.9
+mypy==1.18.2
+mypy_extensions==1.1.0
+packaging==25.0
+pathspec==0.12.1
+platformdirs==4.5.0
+python-dotenv==1.2.1
+pytokens==0.3.0
+sqlparse==0.5.3
+typing_extensions==4.15.0
+tzdata==2025.2
