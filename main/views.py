@@ -1,8 +1,24 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse
 from .models import MenuItem
 
 
-def menu_page(request: HttpRequest, slug: str) -> HttpResponse:
-    item = get_object_or_404(MenuItem, slug=slug)
-    return render(request, 'page.html', {'item': item})
+def index_view(request):
+    return render(request, "main/page.html", {"title": "Главная страница"})
+
+
+def about_view(request):
+    return render(request, "main/page.html", {"title": "О нас"})
+
+
+def services_view(request):
+    return render(request, "main/page.html", {"title": "Услуги"})
+
+
+def terms(request):
+    return render(request, "main/page.html", {"title": "Условия пользования"})
+
+
+def service(request, service_slug: str):
+    title = f'Услуга: {service_slug.replace("-", " ").capitalize()}'
+    return render(request, "main/page.html", {"title": title})

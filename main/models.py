@@ -1,28 +1,42 @@
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.urls import reverse
-
-
-# Create your models here.
-
-
-class Menu(models.Model):
-    name = models.CharField(max_length=200, unique=True)
-    title = models.CharField(max_length=200, blank=True)
-
-    def __str__(self) -> None:
-        return self.name
+from django.urls import NoReverseMatch, reverse
 
 
 class MenuItem(models.Model):
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='items')
-    title = models.CharField(max_length=100)
-    slug = models.SlugField(max_length=100)
-    parent = models.ForeignKey(
-        'self', on_delete=models.CASCADE, null=True, blank=True, related_name='children'
+    name = models.CharField(max_length=100)
+    menu_name = models.CharField(
+        max_length=100, db_index=True
     )
+    parent = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
+    )
+    url = models.CharField(max_length=255, blank=True)
+    named_url = models.CharField(max_length=255, blank=True)
 
-    def __str__(self):
-        return self.title
+    class Meta:
+        verbose_name = "Пункт меню"
+        verbose_name_plural = "Пункты меню"
+        ordering = ["menu_name", "pk"]
 
-    def get_absolute_url(self):
-        return reverse('menu_page', kwargs={'slug': self.slug})
+    def __str__(self) -> str:
+        return f"{self.menu_name} | {self.name}"
+
+    def get_url(self) -> str:
+        if self.named_url:
+            try:
+                return reverse(self.named_url)
+            except NoReverseMatch:
+                return "#"
+        return self.url
+
+    def clean(self):
+        if self.url and self.named_url:
+            raise ValidationError(
+                "Нельзя одновременно указывать и прямой, и именованный URL."
+            )
+        if not self.url and not self.named_url:
+            if self.parent:
+                raise ValidationError(
+                    "Необходимо указать либо прямой, либо именованный URL."
+                )
