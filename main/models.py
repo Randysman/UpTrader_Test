@@ -5,9 +5,7 @@ from django.urls import NoReverseMatch, reverse
 
 class MenuItem(models.Model):
     name = models.CharField(max_length=100)
-    menu_name = models.CharField(
-        max_length=100, db_index=True
-    )
+    menu_name = models.CharField(max_length=100, db_index=True)
     parent = models.ForeignKey(
         "self", on_delete=models.CASCADE, null=True, blank=True, related_name="children"
     )
@@ -30,7 +28,7 @@ class MenuItem(models.Model):
                 return "#"
         return self.url
 
-    def clean(self):
+    def clean(self) -> None:
         if self.url and self.named_url:
             raise ValidationError(
                 "Нельзя одновременно указывать и прямой, и именованный URL."
