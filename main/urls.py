@@ -1,4 +1,10 @@
 from django.urls import path
 
+from main import views
 
-urlpatterns = [("",)]
+app_name = 'main'
+
+
+urlpatterns = [
+
+]
